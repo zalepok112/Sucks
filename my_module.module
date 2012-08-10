@@ -1,0 +1,193 @@
+<?php
+
+
+/**
+ * Implements hook_menu()
+ */
+function my_module_menu() {
+  $items = array();
+  $items['my-page'] = array(
+  'title'           => 'My first page',
+  'page callback'   => 'my_first_page',
+  'access callback' => TRUE,
+);
+  $items['error-403'] = array(
+  'title'           => 'Error 403',
+  'page callback'   => 'error_403_page',
+  'access callback' => TRUE,
+);
+  $items['error-404'] = array(
+  'title'           => 'Error 404',
+  'page callback'   => 'error_404_page',
+  'access callback' => TRUE,
+);
+  $items['curl'] = array(
+  'title'           => 'cURL',
+  'page callback'   => 'curl',
+  'access callback' => TRUE,
+);
+  $items['rss'] = array(
+  'title'           => 'RSS Feed',
+  'page callback'   => 'rss',
+  'access callback' => TRUE,
+);
+  return $items;
+}
+
+/**
+ * Function my_first_page
+ */
+function my_first_page() {
+  return t('Who are U???! Fucking nasty bitch!');
+}
+
+function error_403_page() {
+  return t('Go there>>>> Nigger, U don\'t have the access!');
+}
+
+function error_404_page() {
+  return t('Buy some glasses loser! There is no such way!');
+}
+/**
+ * Implements hook_block_info()
+ */
+function my_module_block_info() {
+  $blocks = array();
+  $blocks['myblock-1']['info'] = t('This is my block');
+  $blocks['myblock-1']['cache'] = DRUPAL_CACHE_PER_ROLE;
+  return $blocks;
+}
+/**
+ * Implements hook_block_view()
+ */
+function my_module_block_view($delta = '') {
+  $block = array();
+  if($delta == 'myblock-1') {
+    if(user_access('authenticated user')) {
+    $content =
+      'In the field of IT technology for developers
+       important not only  to show your skills, but also be able
+       to improve them. An important aspect of our work is the
+       constant upgrading of knowledge, which, even in far future,
+       but still needed.';
+    } else {
+      $content = 'Access to view this block is denied.';
+    }
+    $block['subject'] = t('Hello Nigger :)');
+    $block['content'] = $content;
+  }
+  return $block;
+}
+/**
+ * Implements hook_init()
+ */
+//function my_module_init() {
+  //drupal_set_message('Hi, pretty cheek :)');
+//}
+/**
+ * Implements hook_node_view().
+ */
+function my_module_node_view($node, $view_mode, $langcode) {
+  if ($node -> nid == 592) {
+    drupal_set_message('Do you see me? Or you\'re blind?');
+  }
+}
+/**
+ * Implements hook_node_access().
+ */
+function my_module_node_access($node) {
+    $arg = arg();
+  if ($arg['0'] == 'node' && isset($arg['1']) && is_numeric($arg['1'])) {
+    $node = node_load($arg['1']);
+    if ($node->type == 'article' || $node->type == 'brend') {
+      return NODE_ACCESS_DENY;
+    }
+  }
+}
+/**
+ * Implements hook_node_insert()
+ */
+function my_module_node_insert() {
+drupal_set_message('Your node is real sheet');
+}
+/**
+ * Implements hook_node_update()
+ */
+function my_module_node_update() {
+drupal_set_message('Changes fuck yeah');
+}
+/**
+ * Implements hook_node_delete()
+ */
+function my_module_node_delete() {
+drupal_set_message('Erasing...');
+}
+/**
+ * Implements hook_user_view()
+ */
+function my_module_user_view($username) {
+  if ($username->uid == 1) {
+    drupal_set_message('You\'re just a fucking user');
+  }
+}
+/**
+ * Implements hook_user_insert()
+ */
+function my_module_user_insert() {
+  drupal_set_message('Registring...');
+}
+/**
+ * Implements hook_user_update()
+ */
+function my_module_user_update() {
+  drupal_set_message('You\'ve just updated now...');
+}
+/**
+ * Implements hook_user_delete()
+ */
+function my_module_user_delete() {
+  drupal_set_message('Bye Nigger :)');
+}
+/*function my_module_apachesolr_process_results(&$results){
+  drupal_set_message('<pre>' . print_r($results, TRUE) . '</pre>');
+  drupal_set_message('<pre>' . print_r($results['snippets'], TRUE) . '</pre>');
+}*/
+/*function my_module_apachesolr_update_index($document, $node, $namespace) {
+  if ($node->type == 'druupik') {
+    $image_uri = $node->field_image['und'][0]['uri'];
+    $description = $node->field_description['und'][0]['safe_value'];
+    $document->addField('ss_my_contenttype_image', $image_uri);
+    $document->addField('ts_my_contenttype_description', $description);
+  }
+}
+function my_module_apachesolr_query_prepare($query) {
+  $query->addParam('fl', 'ss_my_contenttype_image');
+  $query->addParam('fl', 'ts_my_conetnttype_description');
+}*/
+function curl() {
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, 'http://bash.im/random');
+  curl_setopt($ch, CURLOPT_HEADER, 0);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  $res = curl_exec($ch);
+  preg_match_all('/<div class="text">(.*?)<\/div>/', $res, $data);
+  foreach ($data[1] as $key => $value) {
+    $text .= $value . '<hr></hr>';
+  }
+  print_r($text);
+  curl_close($ch);
+}
+function rss() {
+  $ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "http://habrahabr.ru/rss/hubs/");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$output = curl_exec($ch);
+curl_close($ch);
+echo $output;
+$xml = new SimpleXMLElement($output);
+echo strip_tags($xml->channel->item->description);
+}
+
+
+
+
